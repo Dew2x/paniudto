@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paniudto - Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            margin-top: 80px;
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .admin-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 5px;
+            margin-bottom: 30px;
+        }
+
+        .admin-tab {
+            flex: 1;
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .admin-tab.active {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .admin-tab:hover:not(.active) {
+            background: #e9ecef;
+        }
+
+        .admin-panel {
+            display: none;
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .sync-status {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .status-indicator.online {
+            background: #28a745;
+        }
+
+        .status-indicator.offline {
+            background: #dc3545;
+        }
+
+        .status-indicator.syncing {
+            background: #ffc107;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-admin {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #c0392b;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .sync-logs {
+            max-height: 400px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 15px;
+        }
+
+        .log-entry {
+            padding: 8px 0;
+            border-bottom: 1px solid #dee2e6;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-timestamp {
+            color: #6c757d;
+            margin-right: 10px;
+        }
+
+        .log-action {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .log-action.save {
+            color: #28a745;
+        }
+
+        .log-action.load {
+            color: #007bff;
+        }
+
+        .log-action.error {
+            color: #dc3545;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>Paniudto Admin</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="admin.html" class="nav-link active">Admin</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" onclick="logout()" class="nav-link login-btn">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Admin Dashboard -->
+    <main class="admin-container">
+        <div class="admin-header">
+            <h1>Admin Dashboard</h1>
+            <p>FileMaker Pro Integration & Database Management</p>
+        </div>
+
+        <!-- Admin Tabs -->
+        <div class="admin-tabs">
+            <button class="admin-tab active" onclick="showPanel('overview')">Overview</button>
+            <button class="admin-tab" onclick="showPanel('users')">Users</button>
+            <button class="admin-tab" onclick="showPanel('dishes')">Dishes</button>
+            <button class="admin-tab" onclick="showPanel('orders')">Orders</button>
+            <button class="admin-tab" onclick="showPanel('sync')">FileMaker Sync</button>
+        </div>
+
+        <!-- Overview Panel -->
+        <div id="overview-panel" class="admin-panel active">
+            <h2>System Overview</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="total-users">0</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-dishes">0</div>
+                    <div class="stat-label">Total Dishes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-orders">0</div>
+                    <div class="stat-label">Total Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="last-sync">Never</div>
+                    <div class="stat-label">Last Sync</div>
+                </div>
+            </div>
+
+            <div class="sync-status">
+                <h3>System Status</h3>
+                <div class="status-item">
+                    <span><span class="status-indicator online" id="database-status"></span>Database Connection</span>
+                    <span id="database-status-text">Connected</span>
+                </div>
+                <div class="status-item">
+                    <span><span class="status-indicator offline" id="filemaker-status"></span>FileMaker Pro Sync</span>
+                    <span id="filemaker-status-text">Disconnected</span>
+                </div>
+                <div class="status-item">
+                    <span><span class="status-indicator online" id="github-status"></span>GitHub Repository</span>
+                    <span id="github-status-text">Connected</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Panel -->
+        <div id="users-panel" class="admin-panel">
+            <h2>User Management</h2>
+            
+            <div class="action-buttons">
+                <button class="btn-admin btn-primary" onclick="showAddUserModal()">Add User</button>
+                <button class="btn-admin btn-secondary" onclick="refreshUsers()">Refresh</button>
+                <button class="btn-admin btn-warning" onclick="exportUsers()">Export JSON</button>
+            </div>
+
+            <table class="data-table" id="users-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Last Login</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Users will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Dishes Panel -->
+        <div id="dishes-panel" class="admin-panel">
+            <h2>Dish Management</h2>
+            
+            <div class="action-buttons">
+                <button class="btn-admin btn-primary" onclick="showAddDishModal()">Add Dish</button>
+                <button class="btn-admin btn-secondary" onclick="refreshDishes()">Refresh</button>
+                <button class="btn-admin btn-warning" onclick="exportDishes()">Export JSON</button>
+            </div>
+
+            <table class="data-table" id="dishes-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Available</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dishes will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Orders Panel -->
+        <div id="orders-panel" class="admin-panel">
+            <h2>Order Management</h2>
+            
+            <div class="action-buttons">
+                <button class="btn-admin btn-secondary" onclick="refreshOrders()">Refresh</button>
+                <button class="btn-admin btn-warning" onclick="exportOrders()">Export JSON</button>
+            </div>
+
+            <table class="data-table" id="orders-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Orders will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- FileMaker Sync Panel -->
+        <div id="sync-panel" class="admin-panel">
+            <h2>FileMaker Pro Synchronization</h2>
+            
+            <div class="action-buttons">
+                <button class="btn-admin btn-success" onclick="syncWithFileMaker()">Sync Now</button>
+                <button class="btn-admin btn-primary" onclick="exportAllData()">Export All to FileMaker</button>
+                <button class="btn-admin btn-warning" onclick="importFromFileMaker()">Import from FileMaker</button>
+                <button class="btn-admin btn-secondary" onclick="clearSyncLogs()">Clear Logs</button>
+            </div>
+
+            <div class="sync-status">
+                <h3>Sync Configuration</h3>
+                <div class="status-item">
+                    <span>Auto-sync Enabled</span>
+                    <input type="checkbox" id="auto-sync-toggle" onchange="toggleAutoSync()">
+                </div>
+                <div class="status-item">
+                    <span>Sync Interval</span>
+                    <select id="sync-interval" onchange="updateSyncInterval()">
+                        <option value="60">1 minute</option>
+                        <option value="300" selected>5 minutes</option>
+                        <option value="900">15 minutes</option>
+                        <option value="3600">1 hour</option>
+                    </select>
+                </div>
+            </div>
+
+            <h3>Sync Logs</h3>
+            <div class="sync-logs" id="sync-logs">
+                <!-- Sync logs will be loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Add User Modal -->
+    <div id="add-user-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('add-user-modal')">&times;</span>
+            <h2>Add New User</h2>
+            <form id="add-user-form">
+                <div class="form-group">
+                    <label for="new-username">Username:</label>
+                    <input type="text" id="new-username" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-email">Email:</label>
+                    <input type="email" id="new-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-password">Password:</label>
+                    <input type="password" id="new-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-role">Role:</label>
+                    <select id="new-role">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-admin btn-primary">Add User</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Dish Modal -->
+    <div id="add-dish-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('add-dish-modal')">&times;</span>
+            <h2>Add New Dish</h2>
+            <form id="add-dish-form">
+                <div class="form-group">
+                    <label for="dish-name">Name:</label>
+                    <input type="text" id="dish-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="dish-description">Description:</label>
+                    <textarea id="dish-description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="dish-price">Price (₱):</label>
+                    <input type="number" id="dish-price" required>
+                </div>
+                <div class="form-group">
+                    <label for="dish-category">Category:</label>
+                    <select id="dish-category">
+                        <option value="seafood">Seafood</option>
+                        <option value="soup">Soup</option>
+                        <option value="fusion">Fusion</option>
+                        <option value="salad">Salad</option>
+                        <option value="meat">Meat</option>
+                        <option value="dessert">Dessert</option>
+                        <option value="vegetable">Vegetable</option>
+                        <option value="noodles">Noodles</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dish-image">Image Path:</label>
+                    <input type="text" id="dish-image" placeholder="images/dish-name.jpg">
+                </div>
+                <button type="submit" class="btn-admin btn-primary">Add Dish</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="script.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        // Check admin access when page loads
+        document.addEventListener('DOMContentLoaded', async function() {
+            await checkAdminAccess();
+            await loadOverviewStats();
+            await loadUsers();
+            await loadSyncLogs();
+        });
+    </script>
+</body>
+</html>

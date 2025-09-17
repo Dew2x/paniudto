@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paniudto - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>Paniudto</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link active">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="about.html" class="nav-link">About Us</a>
+                </li>
+                <li class="nav-item">
+                    <a href="contact.html" class="nav-link">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a href="accomplishments.html" class="nav-link">Accomplishments</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" onclick="logout()" class="nav-link login-btn">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <main class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>Welcome to Paniudto Dashboard</h1>
+            <p class="tagline">Elevating the local flavors of Cantilan</p>
+            <p id="welcomeUser" class="welcome-message"></p>
+        </div>
+
+        <!-- Menu Section -->
+        <section class="menu-section">
+            <h2>Our Local Specialties</h2>
+            <p class="menu-description">Discover the authentic flavors of Cantilan, Surigao del Sur</p>
+            
+            <div class="dishes-grid">
+                <!-- Dish cards will be loaded here by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Quick Stats (simple student project feature) -->
+        <section class="stats-section">
+            <h3>Restaurant Stats</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h4>12</h4>
+                    <p>Local Dishes</p>
+                </div>
+                <div class="stat-card">
+                    <h4>500+</h4>
+                    <p>Happy Customers</p>
+                </div>
+                <div class="stat-card">
+                    <h4>5</h4>
+                    <p>Years Serving</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Paniudto Restaurant. Made by IT Students - Group Project</p>
+    </footer>
+
+    <script src="js/database.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Check if user is logged in when page loads
+        document.addEventListener('DOMContentLoaded', async function() {
+            checkLoginStatus();
+            await loadDishes();
+        });
+    </script>
+</body>
+</html>

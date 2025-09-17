@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paniudto - Contact Us</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>Paniudto</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="about.html" class="nav-link">About Us</a>
+                </li>
+                <li class="nav-item">
+                    <a href="contact.html" class="nav-link active">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a href="accomplishments.html" class="nav-link">Accomplishments</a>
+                </li>
+                <li class="nav-item">
+                    <a href="login.html" class="nav-link login-btn">Login</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <main class="page-container">
+        <div class="page-header">
+            <h1>Contact Paniudto</h1>
+            <p>Get in touch with us for reservations, inquiries, or feedback</p>
+        </div>
+
+        <div class="page-content">
+            <h2>Restaurant Information</h2>
+            <p>
+                Welcome to Paniudto! We'd love to hear from you. Whether you're interested in making a reservation, 
+                have questions about our menu, or want to provide feedback, we're here to help.
+            </p>
+
+            <div class="contact-info">
+                <h3>📍 Location</h3>
+                <p><strong>Address:</strong> Barangay Poblacion, Cantilan, Surigao del Sur, Philippines</p>
+                <p><strong>Landmark:</strong> Near Cantilan Municipal Hall</p>
+                <p><em>Note: This is a fictional location for our student project</em></p>
+            </div>
+
+            <div class="contact-info">
+                <h3>📞 Contact Details</h3>
+                <p><strong>Phone:</strong> +63 912 345 6789</p>
+                <p><strong>Email:</strong> info@paniudto.com</p>
+                <p><strong>Facebook:</strong> @PaniudtoRestaurant</p>
+                <p><em>Note: These are demo contact details for the project</em></p>
+            </div>
+
+            <div class="contact-info">
+                <h3>🕒 Operating Hours</h3>
+                <p><strong>Monday - Thursday:</strong> 10:00 AM - 9:00 PM</p>
+                <p><strong>Friday - Sunday:</strong> 10:00 AM - 10:00 PM</p>
+                <p><strong>Special Events:</strong> Please call ahead for arrangements</p>
+            </div>
+
+            <h3>Quick Message</h3>
+            <p>
+                <strong>Note:</strong> This is a student project and not a real restaurant. 
+                The contact form below is for demonstration purposes only and does not actually send messages.
+            </p>
+
+            <!-- Simple Contact Form (Demo Only) -->
+            <form class="contact-form" onsubmit="return handleContactForm(event)">
+                <div class="form-group">
+                    <label for="contactName">Name:</label>
+                    <input type="text" id="contactName" name="contactName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="contactEmail">Email:</label>
+                    <input type="email" id="contactEmail" name="contactEmail" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="contactSubject">Subject:</label>
+                    <select id="contactSubject" name="contactSubject" required>
+                        <option value="">Choose a topic...</option>
+                        <option value="reservation">Reservation Inquiry</option>
+                        <option value="menu">Menu Questions</option>
+                        <option value="feedback">Feedback</option>
+                        <option value="project">About This Project</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="contactMessage">Message:</label>
+                    <textarea id="contactMessage" name="contactMessage" rows="5" required></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-full">Send Message (Demo)</button>
+            </form>
+            
+            <div id="contact-response" class="message" style="display: none;"></div>
+        </div>
+    </main>
+
+
+    <script src="script.js"></script>
+    <script>
+        // Simple demo contact form handler
+        function handleContactForm(event) {
+            event.preventDefault();
+            
+            const responseDiv = document.getElementById('contact-response');
+            const name = document.getElementById('contactName').value;
+            
+            // Show demo response
+            responseDiv.innerHTML = `
+                <p><strong>Thank you, ${name}!</strong></p>
+                <p>This is a demo response. In a real application, your message would be sent to the restaurant.</p>
+                <p>For now, your form submission has been received and processed locally.</p>
+            `;
+            responseDiv.className = 'success-message';
+            responseDiv.style.display = 'block';
+            
+            // Clear form
+            event.target.reset();
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                responseDiv.style.display = 'none';
+            }, 5000);
+            
+            return false;
+        }
+    </script>
+    
+    <style>
+        /* Additional styles for contact form */
+        .contact-form {
+            background-color: #f8f9fa;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+        
+        .contact-form select,
+        .contact-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: Arial, sans-serif;
+        }
+        
+        .contact-form select:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            border-color: #e74c3c;
+        }
+        
+        .contact-form textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+    </style>
+</body>
+</html>
